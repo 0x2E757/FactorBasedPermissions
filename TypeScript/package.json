@@ -1,0 +1,9 @@
+{
+  "name": "factor-based-permissions",
+  "version": "0.0.1",
+  "description": "",
+  "license": "MIT",
+  "author": "0x2E757",
+  "type": "commonjs",
+  "main": "index.js"
+}
