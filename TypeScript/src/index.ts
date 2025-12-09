@@ -31,9 +31,8 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
   }
 
   private _parseFactors(satisfiedFactorsGroup: string | null) {
-    if (!satisfiedFactorsGroup) {
+    if (!satisfiedFactorsGroup)
       return;
-    }
 
     for (const factor of satisfiedFactorsGroup.split(ITEMS_DELIM)) {
       const factorNumeric = parseNumeric<TFactor>(factor);
@@ -42,33 +41,28 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
   }
 
   private _parsePermissions(permissionGroupsGroup: string | null) {
-    if (!permissionGroupsGroup) {
+    if (!permissionGroupsGroup)
       return;
-    }
 
     for (const permissionGroup of permissionGroupsGroup.split(GROUP_DELIM)) {
       const [permissionsRaw, requiredFactorsRaw] = permissionGroup.split(REQUIRED_FACTORS_DELIM);
       const permissions = permissionsRaw?.split(ITEMS_DELIM)?.map(parseNumeric<TPermission>) ?? [];
       const requiredFactors = requiredFactorsRaw?.split(ITEMS_DELIM)?.map(parseNumeric<TFactor>) ?? [];
 
-      for (const permission of permissions) {
+      for (const permission of permissions)
         this._permissionsLookup.set(permission, requiredFactors);
-      }
 
-      for (const requiredFactor of requiredFactors) {
-        if (!this._factorsLookup.has(requiredFactor)) {
+      for (const requiredFactor of requiredFactors)
+        if (!this._factorsLookup.has(requiredFactor))
           this._factorsLookup.set(requiredFactor, false);
-        }
-      }
     }
   }
 
   public checkPermission(permission: TPermission) {
     const cachedResult = this._permissionCheckLookup.get(permission);
 
-    if (cachedResult !== undefined) {
+    if (cachedResult !== undefined)
       return cachedResult;
-    }
 
     const requiredFactors = this._permissionsLookup.get(permission);
 
@@ -77,12 +71,11 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
       return null;
     }
 
-    for (const requiredFactor of requiredFactors) {
+    for (const requiredFactor of requiredFactors)
       if (!this._factorsLookup.get(requiredFactor)) {
         this._permissionCheckLookup.set(permission, false);
         return false;
       }
-    }
 
     this._permissionCheckLookup.set(permission, true);
     return true;
@@ -92,9 +85,8 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
     const cachedResult = this._permissionCheckLookup.get(permission);
     const requiredFactors = this._permissionsLookup.get(permission) ?? [];
 
-    if (cachedResult === true) {
+    if (cachedResult === true)
       return requiredFactors;
-    }
 
     return requiredFactors.filter((factor) => this._factorsLookup.get(factor));
   }
@@ -102,9 +94,8 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
   public getMissingFactors(permission: TPermission) {
     const cachedResult = this._permissionCheckLookup.get(permission);
 
-    if (cachedResult === true) {
+    if (cachedResult === true)
       return [];
-    }
 
     const requiredFactors = this._permissionsLookup.get(permission) ?? [];
     return requiredFactors.filter((factor) => !this._factorsLookup.get(factor));
