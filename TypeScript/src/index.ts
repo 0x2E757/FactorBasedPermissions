@@ -49,7 +49,9 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
     for (const permissionGroup of permissionGroupsGroup.split(GROUP_DELIM)) {
       const [permissionsRaw, requiredFactorsRaw] = permissionGroup.split(REQUIRED_FACTORS_DELIM);
       const permissions = permissionsRaw?.split(ITEMS_DELIM)?.map(parseNumeric<TPermission>) ?? [];
-      const requiredFactors = requiredFactorsRaw?.split(ITEMS_DELIM)?.map(parseNumeric<TFactor>) ?? [];
+      const requiredFactors = requiredFactorsRaw
+        ? requiredFactorsRaw.split(ITEMS_DELIM).map(parseNumeric<TFactor>)
+        : [];
 
       for (const permission of permissions)
         this._permissionsLookup.set(permission, requiredFactors);
@@ -80,7 +82,7 @@ export class FactorBasedPermissions<TFactor extends number, TPermission extends 
   }
 
   public getSatisfiedFactors(permission?: TPermission) {
-    if (!permission)
+    if (permission === undefined)
       return [...this._satisfiedFactors];
 
     const cachedResult = this._permissionCheckLookup.get(permission);

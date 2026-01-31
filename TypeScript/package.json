@@ -1,11 +1,12 @@
 {
   "name": "factor-based-permissions",
-  "version": "0.0.3",
-  "description": "",
+  "version": "0.0.4",
+  "description": "Lightweight library for parsing and checking factor-based permissions from JWT tokens",
   "license": "MIT",
   "author": "0x2E757",
   "type": "module",
   "files": [
+    "src",
     "dist"
   ],
   "main": "dist/index.js",
